@@ -12,7 +12,9 @@ First, you have to get the package from the npm registry by typing `npm install 
 
 Currently there are only two functions available :
 
-- `getMovieReview(title)` : return basic info about the movie title given as argument. The return statement is an object similar to the following :
+## `getMovieReview(title)`
+
+This function returns basic info about the movie title given as argument. The return statement is an object similar to the following :
 
 ```
 {
@@ -33,5 +35,51 @@ Currently there are only two functions available :
 
   // The complete review URL on the rottentomatoes website
   url: 'https://rottentomatoes.com/m/ex_machina'
-  }
+}
   ```
+
+## `getOpenings()`
+
+This one does not accept arguments. It returns an object similar to the following :
+
+```
+{
+  // The movie review URL on the rottentomatoes website
+  link: 'https://www.rottentomatoes.com//m/woman_in_motion',
+
+  // The movie poster URL
+  poster: 'https://resizing.flixster.com/hmuV3hJIv19p9GdEBWkhFfQ_DA4=/180x257/v2/https://resizing.flixster.com/XdBXG5iWPN9rIbTLBu6ga0f9s2M=/ems.ZW1zLXByZC1hc3NldHMvbW92aWVzL2ZjYjcxNzdmLTgxZmEtNDM2Ni1hMzUyLTVjMmU1OTJjMzllYS5qcGc=',
+
+  // Its release date (if known)
+  releaseDate: 'No release date known yet...',
+
+  // The movie title
+  title: 'Woman in Motion',
+
+  // The critics consensus
+  consensus: "Nichelle Nichols' daunting task to launch a national blitz for NASA. Nichelle recruited many trailblazing astronauts who became the first African American, Asian and Latino people to fly in space.",
+
+  // Some additional info
+  additionalInfo: '1hr 35min'
+}  
+```
+
+## Usage
+
+Each of those functions returns a promise, like the following :
+
+```
+const rotten = require('rotten-parser');
+
+rotten.getOpenings()
+  .then(data => console.log(data))
+  .catch(err => console.error(err));
+```
+
+## Contributions
+
+Any help is welcome ! You can open an issue or a pull request to get started and we'll get in touch.
+
+## License
+
+This code is licensed under the GNU GPL v3 license.
