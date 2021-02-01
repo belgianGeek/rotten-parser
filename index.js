@@ -66,7 +66,7 @@ module.exports = {
       })
       .catch(err => {
         console.error(`Couldn't get this movie review : ${err}`);
-        reject(new Error(`An error occurred : ${err}`));
+        reject(new Error(`Couldn't get this movie review : ${err}`));
       });
     });
   },
@@ -88,20 +88,24 @@ module.exports = {
           let openingMovies = [];
 
           // Avoid ES6 because it breaks $(this)...
-          $('.mb-movies .mb-movie', html).each(function() {
+          $('.media-list .media-list__item', html).each(function() {
             let movie = {};
 
-            movie.link = `https://www.rottentomatoes.com/${$(this).find('.movie_info a').attr('href')}`;
-            movie.poster = $(this).find('.poster_container img').attr('src');
-            movie.releaseDate = $(this).find('.release-date').text();
-            movie.title = $(this).find('.movieTitle').text();
+            movie.link = `https://www.rottentomatoes.com/${$(this).find('.media-list__poster_container a').attr('href')}`;
+            movie.poster = $(this).find('.media-list__poster').attr('src');
+
+            // Retrieve the movie release date, if known
+            if ($(this).find('.media-list__release-date').text() && $(this).find('.media-list__release-date').text() !== '') movie.releaseDate = $(this).find('.media-list__release-date').text().trim();
+            else movie.releaseDate = 'No release date known yet...';
+
+            movie.title = $(this).find('.media-list__title').text().trim();
 
             // Define the movie score
-            if ($(this).find('.movie_info .tMeterScore').length) {
-              movie.score = $(this).find('.movie_info .tMeterScore').text();
-            } else {
-              movie.score = 'No consensus yet...';
-            }
+            if ($(this).find('.media-list__consensus').length) movie.consensus = $(this).find('.media-list__consensus-text').text().trim();
+            else movie.consensus = 'No consensus yet...';
+
+            // Retrieve some additional info, if any
+            if ($(this).find('.media-list__other_info').length) movie.additionalInfo = $(this).find('.media-list__other_info').text().trim();
 
             openingMovies.push(movie);
           });
