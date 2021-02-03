@@ -8,66 +8,71 @@ module.exports = {
     const url = `https://rottentomatoes.com/m/${args.join('_')}`;
     return new Promise((fullfill, reject) => {
       axios({
-        url: url,
-        method: 'GET'
-      })
-      .then(res => {
-        let rottenTitle, rottenRating, rottenSynopsis, rottenConsensus, rottenPoster;
+          url: url,
+          method: 'GET'
+        })
+        .then(res => {
+          let rottenTitle, rottenRating, audienceRating, rottenSynopsis, rottenConsensus, rottenPoster;
 
-        if (res.status === 200) {
-          $ = $.load(res.data);
+          if (res.status === 200) {
+            $ = $.load(res.data);
 
-          // Title
-          if ($('.mop-ratings-wrap__title--top').length) {
-            rottenTitle = $('.mop-ratings-wrap__title--top').text();
-          } else {
-            reject(new Error('Unknown movie title :(('));
+            // Title
+            if ($('.scoreboard__title').length) {
+              rottenTitle = $('.scoreboard__title').text();
+            } else {
+              reject(new Error('Sorry, I was unable to retrieve the movie title :(('));
+            }
+
+            if ($('.scoreboard').length) {
+              // Critics rating
+              if ($('.scoreboard').attr('tomatometerscore').length) rottenRating = `${$('.scoreboard').attr('tomatometerscore').trim()}%`;
+              else rottenRating = 'No rating found !';
+
+              if ($('.scoreboard').attr('audiencescore').length) audienceRating = `${$('.scoreboard').attr('audiencescore').trim()}%`;
+              else audienceRating = 'No audience score found !';
+            } else {
+              reject(new Error('Sorry, I was unable to retrieve critics and audience rating.'));
+            }
+
+            // Synopsis
+            if ($('#movieSynopsis').length) {
+              rottenSynopsis = `${$('#movieSynopsis').text().trim().match(/\w.+/)[0].substring(0,250)}...`;
+            } else {
+              rottenSynopsis = 'Synopsis unavailable';
+            }
+
+            // Consensus
+            if ($('.what-to-know__section-body').length) {
+              rottenConsensus = $('.what-to-know__section-body').text().trim().match(/\w.+/)[0].substring(0, 200);
+            } else {
+              rottenConsensus = 'No consensus yet.';
+            }
+
+            // Poster
+            if ($('.posterImage').length) {
+              rottenPoster = $('.posterImage').attr('data-src');
+            }
+
+            let result = {
+              title: rottenTitle,
+              rating: rottenRating,
+              audienceScore: audienceRating,
+              consensus: rottenConsensus,
+              synopsis: rottenSynopsis,
+              poster: rottenPoster,
+              url: url
+            };
+
+            fullfill(result);
+          } else if (res.status === 404) {
+            reject(new Error(`Page not found !`));
           }
-
-          // Rating
-          if ($('#tomato_meter_link .mop-ratings-wrap__percentage').length) {
-            rottenRating = $('#tomato_meter_link .mop-ratings-wrap__percentage').text().trim();
-          } else {
-            rottenRating = '<i>No rating found !</i>';
-          }
-
-          // Synopsis
-          if ($('#movieSynopsis').length) {
-            rottenSynopsis = `${$('#movieSynopsis').text().trim().match(/\w.+/)[0].substring(0,250)}...`;
-          } else {
-            rottenSynopsis = 'Synopsis unavailable';
-          }
-
-          // Consensus
-          if ($('.mop-ratings-wrap__text--concensus').length) {
-            rottenConsensus = $('.mop-ratings-wrap__text--concensus').text().match(/\w.+/)[0].substring(0,200);
-          } else {
-            rottenConsensus = 'No consensus yet.';
-          }
-
-          // Poster
-          if ($('.posterImage').length) {
-            rottenPoster = $('.posterImage').attr('data-src');
-          }
-
-          let result = {
-            title: rottenTitle,
-            rating: rottenRating,
-            consensus: rottenConsensus,
-            synopsis: rottenSynopsis,
-            poster: rottenPoster,
-            url: url
-          };
-
-          fullfill(result);
-        } else if (res.status === 404) {
-          reject(new Error(`Page not found !`));
-        }
-      })
-      .catch(err => {
-        console.error(`Couldn't get this movie review : ${err}`);
-        reject(new Error(`Couldn't get this movie review : ${err}`));
-      });
+        })
+        .catch(err => {
+          console.error(`Couldn't get this movie review : ${err}`);
+          reject(new Error(`Couldn't get this movie review : ${err}`));
+        });
     });
   },
   getOpenings: function() {
