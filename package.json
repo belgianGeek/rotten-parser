@@ -1,6 +1,6 @@
 {
   "name": "rotten-parser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A simple Rottentomatoes webscraper built on top of Puppeteer and Cheerio",
   "main": "index.js",
   "repository": "https://github.com/belgianGeek/rotten-parser",
@@ -8,7 +8,7 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "axios": "^0.21.1",
-    "cheerio": "^1.0.0-rc.3",
-    "puppeteer": "^5.3.1"
+    "cheerio": "^1.0.0-rc.5",
+    "puppeteer": "^6.0.0"
   }
 }
