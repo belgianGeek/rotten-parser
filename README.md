@@ -24,6 +24,9 @@ This function returns basic info about the movie title given as argument. The re
   // The overall critics rating
   rating: '92%',
 
+  // The audience score
+  audienceScore: '86%',
+
   // The critics consensus
   consensus: "Ex Machina leans heavier on ideas than effects, but...",
 
